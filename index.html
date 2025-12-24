@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Game Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .game-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .game-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .game-title {
+            font-size: 1.5em;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .game-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .game-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 5px 12px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎉 Party Game Finder</h1>
+            <p class="subtitle">Find the perfect game for your gathering</p>
+        </header>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Number of Players:</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="players" data-value="all">All</button>
+                    <button class="filter-btn" data-filter="players" data-value="small">2-4 players</button>
+                    <button class="filter-btn" data-filter="players" data-value="medium">5-8 players</button>
+                    <button class="filter-btn" data-filter="players" data-value="large">9+ players</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Energy Level:</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="energy" data-value="all">All</button>
+                    <button class="filter-btn" data-filter="energy" data-value="low">Chill & Relaxed</button>
+                    <button class="filter-btn" data-filter="energy" data-value="medium">Moderate</button>
+                    <button class="filter-btn" data-filter="energy" data-value="high">High Energy</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Game Type:</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="type" data-value="all">All</button>
+                    <button class="filter-btn" data-filter="type" data-value="strategy">Strategy</button>
+                    <button class="filter-btn" data-filter="type" data-value="creative">Creative</button>
+                    <button class="filter-btn" data-filter="type" data-value="physical">Physical</button>
+                    <button class="filter-btn" data-filter="type" data-value="trivia">Trivia</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="games-grid" id="gamesGrid"></div>
+    </div>
+
+    <script>
+        const games = [
+            {
+                title: "Codenames",
+                icon: "🕵️",
+                players: "medium",
+                playerCount: "4-8",
+                duration: "15-30 min",
+                energy: "medium",
+                type: "strategy",
+                description: "Two teams compete to identify their agents using one-word clues. Perfect for word lovers and strategic thinkers.",
+                tags: ["Word Game", "Team-Based", "Strategy"]
+            },
+            {
+                title: "Werewolf",
+                icon: "🐺",
+                players: "large",
+                playerCount: "7-20",
+                duration: "30-60 min",
+                energy: "medium",
+                type: "strategy",
+                description: "A social deduction game where villagers try to identify werewolves hidden among them. Thrilling and dramatic!",
+                tags: ["Social Deduction", "Role-Playing", "Mystery"]
+            },
+            {
+                title: "Charades",
+                icon: "🎭",
+                players: "medium",
+                playerCount: "4-12",
+                duration: "30+ min",
+                energy: "high",
+                type: "physical",
+                description: "Act out words or phrases without speaking while your team guesses. Classic party fun for all ages.",
+                tags: ["Acting", "Guessing", "Classic"]
+            },
+            {
+                title: "Pictionary",
+                icon: "🎨",
+                players: "medium",
+                playerCount: "4-12",
+                duration: "30-60 min",
+                energy: "medium",
+                type: "creative",
+                description: "Draw pictures to help your team guess words or phrases. No artistic skills required, just creativity!",
+                tags: ["Drawing", "Guessing", "Creative"]
+            },
+            {
+                title: "Two Truths and a Lie",
+                icon: "🤔",
+                players: "small",
+                playerCount: "3-10",
+                duration: "15-30 min",
+                energy: "low",
+                type: "trivia",
+                description: "Share three statements about yourself - two true, one false. Others guess which is the lie.",
+                tags: ["Ice Breaker", "Getting to Know You", "Simple"]
+            },
+            {
+                title: "Cards Against Humanity",
+                icon: "🃏",
+                players: "medium",
+                playerCount: "4-10",
+                duration: "30-60 min",
+                energy: "low",
+                type: "creative",
+                description: "Fill in the blank phrases with hilarious and often inappropriate cards. Adult humor at its finest.",
+                tags: ["Adult Humor", "Card Game", "Creative"]
+            },
+            {
+                title: "Musical Chairs",
+                icon: "🪑",
+                players: "medium",
+                playerCount: "6-15",
+                duration: "10-20 min",
+                energy: "high",
+                type: "physical",
+                description: "Walk around chairs while music plays, then rush to sit when it stops. Last one standing wins!",
+                tags: ["Classic", "Active", "Competitive"]
+            },
+            {
+                title: "Heads Up!",
+                icon: "📱",
+                players: "small",
+                playerCount: "2-8",
+                duration: "15-30 min",
+                energy: "medium",
+                type: "trivia",
+                description: "Hold your phone to your forehead while others give you clues about the word displayed.",
+                tags: ["Mobile App", "Guessing", "Fast-Paced"]
+            },
+            {
+                title: "The Resistance",
+                icon: "🎯",
+                players: "medium",
+                playerCount: "5-10",
+                duration: "30-45 min",
+                energy: "medium",
+                type: "strategy",
+                description: "A game of social deduction where resistance members try to complete missions while spies sabotage.",
+                tags: ["Bluffing", "Strategy", "Team-Based"]
+            },
+            {
+                title: "Never Have I Ever",
+                icon: "🙋",
+                players: "medium",
+                playerCount: "4-12",
+                duration: "20-40 min",
+                energy: "low",
+                type: "trivia",
+                description: "Players take turns saying things they've never done. Those who have done it lose a point.",
+                tags: ["Ice Breaker", "Conversation", "Simple"]
+            },
+            {
+                title: "Telestrations",
+                icon: "✏️",
+                players: "medium",
+                playerCount: "4-12",
+                duration: "30-45 min",
+                energy: "medium",
+                type: "creative",
+                description: "The telephone game meets Pictionary. Draw and guess as sketches get hilariously distorted.",
+                tags: ["Drawing", "Hilarious", "Creative"]
+            },
+            {
+                title: "Mafia",
+                icon: "🔫",
+                players: "large",
+                playerCount: "7-20",
+                duration: "30-60 min",
+                energy: "medium",
+                type: "strategy",
+                description: "Similar to Werewolf, townspeople try to eliminate mafia members through voting and deduction.",
+                tags: ["Social Deduction", "Strategy", "Role-Playing"]
+            },
+            {
+                title: "Truth or Dare",
+                icon: "💭",
+                players: "small",
+                playerCount: "3-10",
+                duration: "30+ min",
+                energy: "high",
+                type: "physical",
+                description: "Choose between answering a personal question truthfully or completing a dare challenge.",
+                tags: ["Classic", "Daring", "Personal"]
+            },
+            {
+                title: "Jackbox Party Pack",
+                icon: "📺",
+                players: "medium",
+                playerCount: "3-8",
+                duration: "30-60 min",
+                energy: "medium",
+                type: "creative",
+                description: "Collection of digital party games using smartphones as controllers. Great variety and laughs!",
+                tags: ["Digital", "Variety", "Creative"]
+            },
+            {
+                title: "Spyfall",
+                icon: "🔍",
+                players: "medium",
+                playerCount: "3-8",
+                duration: "15-30 min",
+                energy: "medium",
+                type: "strategy",
+                description: "Everyone knows the secret location except the spy. Ask questions to find the spy without revealing the location.",
+                tags: ["Deduction", "Questions", "Mystery"]
+            },
+            {
+                title: "Cabo",
+                icon: "🎴",
+                players: "small",
+                playerCount: "2-4",
+                duration: "30-45 min",
+                energy: "low",
+                type: "strategy",
+                description: "A card game of memory and strategy where you try to have the lowest score. Remember your cards and swap strategically!",
+                tags: ["Card Game", "Memory", "Strategy"]
+            },
+            {
+                title: "Secret Hitler",
+                icon: "🎩",
+                players: "medium",
+                playerCount: "5-10",
+                duration: "45-60 min",
+                energy: "medium",
+                type: "strategy",
+                description: "A social deduction game set in 1930s Germany. Liberals try to pass policies while secretly identifying and stopping Hitler.",
+                tags: ["Social Deduction", "Political", "Team-Based"]
+            }
+        ];
+
+        let currentFilters = {
+            players: 'all',
+            energy: 'all',
+            type: 'all'
+        };
+
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            const filtered = games.filter(game => {
+                return (currentFilters.players === 'all' || game.players === currentFilters.players) &&
+                       (currentFilters.energy === 'all' || game.energy === currentFilters.energy) &&
+                       (currentFilters.type === 'all' || game.type === currentFilters.type);
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-results">No games match your filters. Try adjusting your selection!</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(game => `
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="game-icon">${game.icon}</span>
+                        <h2 class="game-title">${game.title}</h2>
+                    </div>
+                    <div class="game-meta">
+                        <div class="meta-item">👥 ${game.playerCount}</div>
+                        <div class="meta-item">⏱️ ${game.duration}</div>
+                    </div>
+                    <p class="game-description">${game.description}</p>
+                    <div class="game-tags">
+                        ${game.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filterType = this.dataset.filter;
+                const value = this.dataset.value;
+                
+                document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+                currentFilters[filterType] = value;
+                renderGames();
+            });
+        });
+
+        renderGames();
+    </script>
+</body>
+</html>
